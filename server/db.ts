@@ -1,2 +1,6 @@
 
-// This file is now empty as we're not using a database
+import pg from "pg";
+
+export const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/postgres"
+});
