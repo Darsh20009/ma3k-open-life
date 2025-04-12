@@ -51,7 +51,7 @@ export default function ChatInput({ onSendMessage, disabled = false }: ChatInput
   };
 
   return (
-    <div className="bg-white border-t border-gray-200 p-4">
+    <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4">
       <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="flex items-end gap-2">
           <div className="flex-1 relative">
@@ -60,7 +60,7 @@ export default function ChatInput({ onSendMessage, disabled = false }: ChatInput
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-lg pl-3 pr-10 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               placeholder="اكتب سؤالك أو طلبك هنا..."
               style={{ 
                 maxHeight: "200px", 
@@ -73,7 +73,7 @@ export default function ChatInput({ onSendMessage, disabled = false }: ChatInput
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute left-2 bottom-2 text-gray-400 hover:text-gray-600"
+                className="absolute left-2 bottom-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                 onClick={clearInput}
               >
                 <X className="h-4 w-4" />

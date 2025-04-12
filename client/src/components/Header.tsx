@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Brain, Menu, HelpCircle, User, LogOut } from "lucide-react";
+import { Brain, Menu, HelpCircle, User, LogOut, Settings } from "lucide-react";
 import useMobile from "@/hooks/use-mobile";
 import ThemeSwitcher from "./theme-switcher";
 import { Link } from "wouter";
@@ -49,6 +49,17 @@ export default function Header({ title }: HeaderProps) {
               </Button>
             </Link>
           )}
+          
+          <Link href="/settings">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm hidden sm:inline-flex"
+            >
+              <Settings className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline-block">الإعدادات</span>
+            </Button>
+          </Link>
           
           <Button 
             variant="ghost" 

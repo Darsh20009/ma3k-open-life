@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import ChatPage from "@/pages/ChatPage";
 import AuthPage from "@/pages/auth-page";
+import SettingsPage from "@/pages/SettingsPage";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { useEffect } from "react";
@@ -37,6 +38,7 @@ function Router() {
       <Route path="/" component={Home} />
       <ProtectedRoute path="/chat/:id" component={ChatPage} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/settings" component={SettingsPage} />
       <Route component={NotFound} />
     </Switch>
   );

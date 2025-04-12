@@ -18,7 +18,7 @@ export default function ChatSuggestions({ onSuggestionClick }: ChatSuggestionsPr
         <Button
           key={index}
           variant="outline"
-          className="bg-gray-100 hover:bg-gray-200 rounded-lg p-3 text-sm text-right transition-colors h-auto"
+          className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200 rounded-lg p-3 text-sm text-right transition-colors h-auto"
           onClick={() => onSuggestionClick(suggestion)}
         >
           {suggestion}

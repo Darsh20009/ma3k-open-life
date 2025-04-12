@@ -60,7 +60,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           "max-w-[80%] md:max-w-[70%] py-2 px-4 rounded-lg",
           message.role === "user"
             ? "bg-primary text-white"
-            : "bg-white shadow-sm"
+            : "bg-white dark:bg-gray-800 shadow-sm"
         )}
       >
         {message.role === "assistant" && (
@@ -69,7 +69,10 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             <span className="font-medium text-accent">Open Life</span>
           </div>
         )}
-        <div className={message.role === "user" ? "text-white" : "text-gray-800"}>
+        <div className={message.role === "user" 
+          ? "text-white" 
+          : "text-gray-800 dark:text-gray-200"
+        }>
           {formatContent(message.content)}
         </div>
       </div>
