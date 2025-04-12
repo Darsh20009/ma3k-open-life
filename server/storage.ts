@@ -3,6 +3,8 @@ import {
   chats, type Chat, type InsertChat,
   messages, type Message, type InsertMessage
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -64,7 +66,7 @@ export class MemStorage implements IStorage {
     const chat: Chat = { 
       ...insertChat, 
       id, 
-      createdAt: new Date().toISOString() 
+      createdAt: new Date()
     };
     this.chats.set(id, chat);
     return chat;
@@ -85,7 +87,7 @@ export class MemStorage implements IStorage {
     const message: Message = {
       ...insertMessage,
       id,
-      createdAt: new Date().toISOString()
+      createdAt: new Date()
     };
     this.messages.set(id, message);
     
@@ -120,4 +122,86 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+  
+  // Chat methods
+  async createChat(insertChat: InsertChat): Promise<Chat> {
+    const [chat] = await db
+      .insert(chats)
+      .values(insertChat)
+      .returning();
+    return chat;
+  }
+  
+  async getChat(id: number): Promise<Chat | undefined> {
+    const [chat] = await db.select().from(chats).where(eq(chats.id, id));
+    return chat || undefined;
+  }
+  
+  async getAllChats(): Promise<Chat[]> {
+    return db.select().from(chats).orderBy(desc(chats.createdAt));
+  }
+  
+  // Message methods
+  async createMessage(insertMessage: InsertMessage): Promise<Message> {
+    const [message] = await db
+      .insert(messages)
+      .values(insertMessage)
+      .returning();
+    
+    // Update chat title if it's the first user message
+    if (message.role === "user") {
+      const chatMessages = await this.getMessagesByChatId(message.chatId);
+      if (chatMessages.length === 1) { // Length is 1 because we just created the message
+        const chat = await this.getChat(message.chatId);
+        if (chat) {
+          // Truncate long messages to a reasonable title length
+          const title = message.content.length > 30 
+            ? message.content.substring(0, 30) + "..." 
+            : message.content;
+          
+          await db
+            .update(chats)
+            .set({ title })
+            .where(eq(chats.id, chat.id));
+        }
+      }
+    }
+    
+    return message;
+  }
+  
+  async getMessage(id: number): Promise<Message | undefined> {
+    const [message] = await db.select().from(messages).where(eq(messages.id, id));
+    return message || undefined;
+  }
+  
+  async getMessagesByChatId(chatId: number): Promise<Message[]> {
+    return db
+      .select()
+      .from(messages)
+      .where(eq(messages.chatId, chatId))
+      .orderBy(messages.createdAt);
+  }
+}
+
+// Switch from memory storage to database storage
+export const storage = new DatabaseStorage();
