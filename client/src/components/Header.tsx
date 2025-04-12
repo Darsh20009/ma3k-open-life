@@ -18,10 +18,10 @@ export default function Header({ title }: HeaderProps) {
     <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-2 px-4">
       <div className="flex justify-between items-center">
         <div className="flex items-center">
-          <h1 className="text-xl font-bold text-primary flex items-center lg:hidden">
+          <Link href="/" className="text-xl font-bold text-primary flex items-center lg:hidden">
             <Brain className="text-accent mr-2 h-5 w-5" />
             <span>Open Life</span>
-          </h1>
+          </Link>
         </div>
         <div className="flex items-center gap-2">
           <ThemeSwitcher />
