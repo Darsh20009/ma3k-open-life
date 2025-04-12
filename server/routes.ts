@@ -4,8 +4,11 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { insertChatSchema, insertMessageSchema } from "@shared/schema";
 import { generateAIResponse } from "./aiml";
+import { setupAuth } from "./auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // إعداد نظام المصادقة
+  setupAuth(app);
   // Create a new chat
   app.post("/api/chats", async (req, res) => {
     try {
