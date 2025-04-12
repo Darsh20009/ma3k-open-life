@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"; // Assumed component
 import { Brain } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import ChatSuggestions from "@/components/ChatSuggestions";
-import { useAuth } from "@/hooks/auth"; // Assumed hook
+import { useAuth } from "@/hooks/use-auth"; // Assumed hook
 
 
 export default function Home() {
