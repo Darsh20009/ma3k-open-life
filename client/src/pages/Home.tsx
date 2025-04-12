@@ -1,14 +1,25 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input"; // Assumed component
 import { Brain } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import ChatSuggestions from "@/components/ChatSuggestions";
+import { useAuth } from "@/hooks/auth"; // Assumed hook
+
 
 export default function Home() {
+  const { user, setAnonymousUsername } = useAuth(); // Added useAuth hook
+  const [showNameDialog, setShowNameDialog] = useState(!user?.username);
   const [creating, setCreating] = useState(false);
   const [_, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!user?.username) {
+      setShowNameDialog(true);
+    }
+  }, [user]);
 
   const createNewChat = async () => {
     if (creating) return;
@@ -45,6 +56,39 @@ export default function Home() {
       setCreating(false);
     }
   };
+
+  if (showNameDialog) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950">
+        <Card className="w-[90%] max-w-md">
+          <CardHeader>
+            <CardTitle>أهلاً بك في Open Life</CardTitle>
+            <CardDescription>الرجاء إدخال اسمك للمتابعة</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const name = new FormData(e.currentTarget).get('username') as string;
+              if (name.trim()) {
+                setAnonymousUsername(name.trim());
+                setShowNameDialog(false);
+              }
+            }}>
+              <div className="space-y-4">
+                <Input 
+                  name="username"
+                  placeholder="أدخل اسمك هنا"
+                  required
+                  minLength={3}
+                />
+                <Button type="submit" className="w-full">متابعة</Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
