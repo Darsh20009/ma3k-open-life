@@ -89,7 +89,7 @@ export default function ChatInput({ onSendMessage, disabled = false }: ChatInput
           </Button>
         </form>
         <div className="text-xs text-gray-500 text-center mt-2">
-          Open Life يعتمد على DeepSeek AI ويقدم إجابات بدون قيود
+          Open Life يعتمد على AIML API ويقدم إجابات بدون قيود
         </div>
       </div>
     </div>
