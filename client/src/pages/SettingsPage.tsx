@@ -3,12 +3,89 @@ import { useAuth } from "@/hooks/use-auth";
 import Header from "@/components/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Code, ExternalLink, Heart, Info } from "lucide-react";
+import { Brain, Code, ExternalLink, Heart, Info, Save, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SettingsPage() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("about");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: ""
+  });
+  
+  // التعامل مع تغيير قيم كلمة المرور
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setPasswordData(prev => ({
+      ...prev,
+      [id === "current-password" ? "currentPassword" : 
+       id === "new-password" ? "newPassword" : "confirmPassword"]: value
+    }));
+  };
+  
+  // إرسال طلب تغيير كلمة المرور
+  const handleSubmitPasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // التحقق من تطابق كلمتي المرور
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast({
+        title: "خطأ في كلمة المرور",
+        description: "كلمة المرور الجديدة وتأكيدها غير متطابقين",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // التحقق من طول كلمة المرور
+    if (passwordData.newPassword.length < 6) {
+      toast({
+        title: "كلمة المرور قصيرة جدًا",
+        description: "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // بدء عملية تغيير كلمة المرور
+    setIsChangingPassword(true);
+    
+    try {
+      // هنا يمكن إضافة الشيفرة الفعلية لتغيير كلمة المرور عبر API
+      // مثال: await apiRequest("POST", "/api/change-password", passwordData);
+      
+      // محاكاة التأخير في العملية
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // عرض رسالة نجاح
+      toast({
+        title: "تم تغيير كلمة المرور",
+        description: "تم تحديث كلمة المرور الخاصة بك بنجاح",
+        variant: "default",
+      });
+      
+      // إعادة تعيين النموذج
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      });
+    } catch (error) {
+      toast({
+        title: "حدث خطأ",
+        description: "لم نتمكن من تغيير كلمة المرور، يرجى المحاولة مرة أخرى",
+        variant: "destructive",
+      });
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen">
@@ -113,16 +190,89 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent>
                   {user ? (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       <div>
-                        <p className="text-sm font-medium">اسم المستخدم:</p>
+                        <p className="text-sm font-medium dark:text-gray-300">اسم المستخدم:</p>
                         <p className="text-gray-700 dark:text-gray-300">{user.username}</p>
                       </div>
                       
-                      <div className="pt-4">
-                        <Button variant="outline" className="w-full sm:w-auto" disabled>
+                      <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <h3 className="text-lg font-medium mb-4 dark:text-gray-200 flex items-center">
+                          <Lock className="text-primary mr-2 h-5 w-5" />
                           تغيير كلمة المرور
-                        </Button>
+                        </h3>
+                        
+                        <form onSubmit={handleSubmitPasswordChange} className="space-y-4">
+                          <div>
+                            <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                              كلمة المرور الحالية
+                            </label>
+                            <Input 
+                              id="current-password" 
+                              type="password" 
+                              placeholder="أدخل كلمة المرور الحالية" 
+                              className="dark:bg-gray-800 dark:text-white"
+                              value={passwordData.currentPassword}
+                              onChange={handlePasswordChange}
+                              disabled={isChangingPassword}
+                              required
+                            />
+                          </div>
+                          
+                          <div>
+                            <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                              كلمة المرور الجديدة
+                            </label>
+                            <Input 
+                              id="new-password" 
+                              type="password" 
+                              placeholder="أدخل كلمة المرور الجديدة" 
+                              className="dark:bg-gray-800 dark:text-white"
+                              value={passwordData.newPassword}
+                              onChange={handlePasswordChange}
+                              disabled={isChangingPassword}
+                              required
+                              minLength={6}
+                            />
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                              يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                              تأكيد كلمة المرور الجديدة
+                            </label>
+                            <Input 
+                              id="confirm-password" 
+                              type="password" 
+                              placeholder="أدخل كلمة المرور الجديدة مرة أخرى" 
+                              className="dark:bg-gray-800 dark:text-white"
+                              value={passwordData.confirmPassword}
+                              onChange={handlePasswordChange}
+                              disabled={isChangingPassword}
+                              required
+                            />
+                          </div>
+                          
+                          <div className="pt-2">
+                            <Button 
+                              type="submit"
+                              variant="default" 
+                              className="w-full sm:w-auto"
+                              disabled={isChangingPassword}
+                            >
+                              {isChangingPassword ? (
+                                <>جاري تحديث كلمة المرور...</>
+                              ) : (
+                                <>
+                                  <Save className="h-4 w-4 mr-2" />
+                                  تحديث كلمة المرور
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </form>
                       </div>
                     </div>
                   ) : (

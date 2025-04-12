@@ -61,14 +61,16 @@ export default function Header({ title }: HeaderProps) {
             </Button>
           </Link>
           
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm hidden sm:inline-flex"
-          >
-            <HelpCircle className="h-4 w-4 mr-1" />
-            المساعدة
-          </Button>
+          <Link href="/help">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm hidden sm:inline-flex"
+            >
+              <HelpCircle className="h-4 w-4 mr-1" />
+              المساعدة
+            </Button>
+          </Link>
         </div>
       </div>
     </header>

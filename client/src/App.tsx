@@ -7,6 +7,7 @@ import Home from "@/pages/Home";
 import ChatPage from "@/pages/ChatPage";
 import AuthPage from "@/pages/auth-page";
 import SettingsPage from "@/pages/SettingsPage";
+import HelpPage from "@/pages/HelpPage";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import { useEffect } from "react";
@@ -39,6 +40,7 @@ function Router() {
       <ProtectedRoute path="/chat/:id" component={ChatPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/settings" component={SettingsPage} />
+      <Route path="/help" component={HelpPage} />
       <Route component={NotFound} />
     </Switch>
   );
