@@ -64,7 +64,19 @@ export default function MainContent({
       queryClient.invalidateQueries({ queryKey: [`/api/chats/${chatId}/messages`] });
     },
     onError: (error: any) => {
-      setError(error.message || "حدث خطأ أثناء معالجة الرسالة");
+      // Check for specific errors
+      if (error.response?.data?.message) {
+        // Handle API response errors
+        if (error.response.data.message.includes("DeepSeek API")) {
+          setError("حدث خطأ في خدمة الذكاء الاصطناعي. قد يكون المفتاح غير صالح أو الرصيد غير كافٍ.");
+        } else {
+          setError(error.response.data.message);
+        }
+      } else if (error.message) {
+        setError(error.message);
+      } else {
+        setError("حدث خطأ أثناء معالجة الرسالة");
+      }
     },
     onSettled: () => {
       setIsProcessing(false);

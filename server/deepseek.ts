@@ -90,6 +90,8 @@ export async function generateAIResponse(
       throw new Error("المفتاح غير صالح أو منتهي الصلاحية. يرجى التحقق من تكوين المفتاح");
     } else if (error.response?.status === 429) {
       throw new Error("تم تجاوز حد الاستخدام للواجهة البرمجية. يرجى المحاولة لاحقًا");
+    } else if (error.response?.status === 402 || (error.response?.data?.error?.message === 'Insufficient Balance')) {
+      throw new Error("الرصيد غير كافٍ في حساب DeepSeek API. يرجى إضافة رصيد إلى حسابك");
     } else {
       throw new Error("حدث خطأ أثناء الاتصال بـ DeepSeek API: " + (error.message || "خطأ غير معروف"));
     }

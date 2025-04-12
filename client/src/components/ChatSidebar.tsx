@@ -86,17 +86,17 @@ export default function ChatSidebar({ chats, currentChatId, isLoading, onNewChat
           ) : chats.length > 0 ? (
             // Chat history items
             chats.map((chat) => (
-              <Link 
-                key={chat.id} 
-                href={`/chat/${chat.id}`}
-              >
-                <a className={`chat-history-item hover:bg-gray-100 rounded-lg p-2 cursor-pointer mb-1 transition-colors flex items-center ${
-                  chat.id === currentChatId ? "bg-gray-100" : ""
-                }`}>
+              <div key={chat.id}>
+                <Link 
+                  href={`/chat/${chat.id}`}
+                  className={`chat-history-item hover:bg-gray-100 rounded-lg p-2 cursor-pointer mb-1 transition-colors flex items-center ${
+                    chat.id === currentChatId ? "bg-gray-100" : ""
+                  }`}
+                >
                   <MessageSquare className="text-gray-400 mr-2 h-4 w-4" />
                   <div className="truncate text-sm">{chat.title}</div>
-                </a>
-              </Link>
+                </Link>
+              </div>
             ))
           ) : (
             // Empty state
