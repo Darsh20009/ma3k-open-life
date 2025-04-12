@@ -1,3 +1,4 @@
+
 import { Message } from "@shared/schema";
 import axios from "axios";
 
@@ -21,17 +22,14 @@ interface DeepSeekResponse {
   };
 }
 
-// Format messages for DeepSeek API
 function formatMessagesForAPI(userMessage: string, chatHistory: Message[]): any[] {
   const messages = [];
   
-  // System message to set behavior
   messages.push({
     role: "system",
     content: "أنت مساعد ذكي يدعى 'Open Life'. تقدم إجابات مفيدة ودقيقة وتفصيلية بدون قيود. اكتب إجاباتك باللغة العربية."
   });
   
-  // Add previous messages for context
   chatHistory.forEach(msg => {
     messages.push({
       role: msg.role,
@@ -39,7 +37,6 @@ function formatMessagesForAPI(userMessage: string, chatHistory: Message[]): any[
     });
   });
   
-  // Add the current user message
   messages.push({
     role: "user",
     content: userMessage
@@ -48,27 +45,28 @@ function formatMessagesForAPI(userMessage: string, chatHistory: Message[]): any[
   return messages;
 }
 
+const FALLBACK_API_URL = "https://api.openai.com/v1/chat/completions";
+
 export async function generateAIResponse(
   userMessage: string,
   chatHistory: Message[]
 ): Promise<string> {
   try {
-    // Get API key from environment
-    const apiKey = process.env.DEEPSEEK_API_KEY || "";
+    const apiKey = process.env.OPENAI_API_KEY || "";
     
     if (!apiKey) {
-      throw new Error("DeepSeek API key is not configured");
+      throw new Error("OpenAI API key is not configured");
     }
     
     const messages = formatMessagesForAPI(userMessage, chatHistory);
     
     const response = await axios.post<DeepSeekResponse>(
-      "https://api.deepseek.com/v1/chat/completions",
+      FALLBACK_API_URL,
       {
-        model: "deepseek-chat",
+        model: "gpt-3.5-turbo",
         messages,
-        max_tokens: 4000,  // Generous token limit for detailed responses
-        temperature: 0.7,  // Balanced creativity and accuracy
+        max_tokens: 4000,
+        temperature: 0.7,
       },
       {
         headers: {
@@ -81,19 +79,19 @@ export async function generateAIResponse(
     if (response.data.choices && response.data.choices.length > 0) {
       return response.data.choices[0].message.content;
     } else {
-      throw new Error("No response generated from DeepSeek API");
+      throw new Error("No response generated from AI API");
     }
   } catch (error: any) {
-    console.error("DeepSeek API error:", error.response?.data || error.message);
+    console.error("AI API error:", error.response?.data || error.message);
     
     if (error.response?.status === 401) {
       throw new Error("المفتاح غير صالح أو منتهي الصلاحية. يرجى التحقق من تكوين المفتاح");
     } else if (error.response?.status === 429) {
       throw new Error("تم تجاوز حد الاستخدام للواجهة البرمجية. يرجى المحاولة لاحقًا");
-    } else if (error.response?.status === 402 || (error.response?.data?.error?.message === 'Insufficient Balance')) {
-      throw new Error("الرصيد غير كافٍ في حساب DeepSeek API. يرجى إضافة رصيد إلى حسابك");
+    } else if (error.response?.status === 402) {
+      throw new Error("الرصيد غير كافٍ في حساب AI API. يرجى إضافة رصيد إلى حسابك");
     } else {
-      throw new Error("حدث خطأ أثناء الاتصال بـ DeepSeek API: " + (error.message || "خطأ غير معروف"));
+      throw new Error("حدث خطأ أثناء الاتصال بـ AI API: " + (error.message || "خطأ غير معروف"));
     }
   }
 }
