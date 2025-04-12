@@ -38,8 +38,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       } else {
         // Code block part
         result.push(
-          <pre key={`code-${index}`} className="bg-gray-100 p-3 rounded mt-2 mb-4 text-left overflow-auto dir-ltr">
-            <code>{part}</code>
+          <pre key={`code-${index}`} className="bg-gray-100 dark:bg-gray-800 p-3 rounded mt-2 mb-4 text-left overflow-auto dir-ltr">
+            <code className="dark:text-gray-300">{part}</code>
           </pre>
         );
       }

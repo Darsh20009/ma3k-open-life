@@ -94,16 +94,16 @@ export default function MainContent({
       <Header title={chat?.title || "محادثة جديدة"} />
       
       {/* Chat area */}
-      <div ref={chatAreaRef} className="chat-area flex-1 overflow-y-auto p-4 bg-gray-50">
+      <div ref={chatAreaRef} className="chat-area flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900">
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
             <LoaderPinwheel className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : messages.length === 0 ? (
           // Welcome message when no messages
-          <div className="max-w-2xl mx-auto mb-6 bg-white rounded-lg p-4 shadow-sm">
+          <div className="max-w-2xl mx-auto mb-6 bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
             <h2 className="text-xl font-semibold text-center text-primary mb-2">مرحباً بك في Open Life</h2>
-            <p className="text-gray-600 text-center mb-4">يمكنك سؤالي عن أي شيء بدون قيود. أنا هنا للإجابة على أسئلتك ومساعدتك.</p>
+            <p className="text-gray-600 dark:text-gray-300 text-center mb-4">يمكنك سؤالي عن أي شيء بدون قيود. أنا هنا للإجابة على أسئلتك ومساعدتك.</p>
           </div>
         ) : (
           // Messages
@@ -118,12 +118,12 @@ export default function MainContent({
         {/* Processing indicator */}
         {isProcessing && (
           <div className="chat-message ai-message flex mb-4">
-            <div className="max-w-[80%] md:max-w-[70%] bg-white rounded-lg py-2 px-4 shadow-sm">
+            <div className="max-w-[80%] md:max-w-[70%] bg-white dark:bg-gray-800 rounded-lg py-2 px-4 shadow-sm">
               <div className="flex items-center mb-1">
                 <Brain className="text-accent mr-2 h-4 w-4" />
                 <span className="font-medium text-accent">Open Life</span>
               </div>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 جاري التفكير<span className="dot-animation">...</span>
               </p>
             </div>

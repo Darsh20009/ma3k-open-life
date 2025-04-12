@@ -88,8 +88,8 @@ export default function ChatInput({ onSendMessage, disabled = false }: ChatInput
             <Send className="h-5 w-5" />
           </Button>
         </form>
-        <div className="text-xs text-gray-500 text-center mt-2">
-          موقع Open Life الذي صمم و كان من تنفيذ شركة ma3k
+        <div className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
+          موقع Open Life الذي صمم و كان من تنفيذ شركة <a href="https://ma3k.odoo.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">ma3k</a>
         </div>
       </div>
     </div>

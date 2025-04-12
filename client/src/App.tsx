@@ -5,12 +5,38 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import ChatPage from "@/pages/ChatPage";
+import AuthPage from "@/pages/auth-page";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
+import { useEffect } from "react";
+
+// تهيئة وضع الثيم الداكن استنادًا إلى إعدادات المستخدم
+function DarkModeInitializer() {
+  useEffect(() => {
+    // التحقق من وجود إعدادات مخزنة
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+    
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else if (savedTheme === "light") {
+      document.documentElement.classList.remove("dark");
+    } else {
+      // استخدم إعدادات النظام كقيمة افتراضية
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.classList.add("dark");
+      }
+    }
+  }, []);
+  
+  return null;
+}
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/chat/:id" component={ChatPage} />
+      <ProtectedRoute path="/chat/:id" component={ChatPage} />
+      <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -19,8 +45,11 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <AuthProvider>
+        <DarkModeInitializer />
+        <Router />
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

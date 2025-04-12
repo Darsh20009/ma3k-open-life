@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useAuth } from "@/hooks/use-auth";
-import { Redirect } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Brain } from "lucide-react";
-import { Link } from "wouter";
 
 // يمكن تعديل هذا الخطط حسب متطلبات تسجيل المستخدمين
 const authSchema = z.object({
@@ -37,10 +36,15 @@ export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "register">("login");
   const { user, loginMutation, registerMutation } = useAuth();
   
+  // التحقق من إذا المستخدم مسجل الدخول أم لا
+  const isLoggedIn = user !== null;
+  
   // إعادة توجيه المستخدم إلى الصفحة الرئيسية إذا كان مسجل الدخول بالفعل
-  if (user) {
-    return <Redirect to="/" />;
-  }
+  useEffect(() => {
+    if (isLoggedIn) {
+      window.location.href = '/';
+    }
+  }, [isLoggedIn]);
   
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
@@ -64,7 +68,7 @@ export default function AuthPage() {
     <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-row items-stretch">
       {/* نموذج المصادقة */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-8">
-        <Card className="w-full max-w-md border-none shadow-none">
+        <Card className="w-full max-w-md border-none shadow-none dark:bg-gray-900">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
               <Brain className="h-10 w-10 text-primary" />
@@ -72,7 +76,7 @@ export default function AuthPage() {
             <CardTitle className="text-3xl">
               {mode === "login" ? "تسجيل الدخول" : "إنشاء حساب جديد"}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="dark:text-gray-400">
               {mode === "login" 
                 ? "قم بتسجيل الدخول للوصول إلى محادثاتك السابقة" 
                 : "قم بإنشاء حساب جديد للبدء في استخدام Open Life"}
@@ -86,12 +90,13 @@ export default function AuthPage() {
                   name="username"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel>اسم المستخدم</FormLabel>
+                      <FormLabel className="dark:text-gray-300">اسم المستخدم</FormLabel>
                       <FormControl>
                         <Input 
                           placeholder="أدخل اسم المستخدم" 
                           {...field} 
                           disabled={isLoading}
+                          className="dark:bg-gray-800 dark:text-white"
                         />
                       </FormControl>
                       <FormMessage />
@@ -103,13 +108,14 @@ export default function AuthPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel>كلمة المرور</FormLabel>
+                      <FormLabel className="dark:text-gray-300">كلمة المرور</FormLabel>
                       <FormControl>
                         <Input 
                           type="password" 
                           placeholder="أدخل كلمة المرور" 
                           {...field} 
                           disabled={isLoading}
+                          className="dark:bg-gray-800 dark:text-white"
                         />
                       </FormControl>
                       <FormMessage />
@@ -131,7 +137,7 @@ export default function AuthPage() {
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-sm text-center">
               {mode === "login" ? (
-                <p>
+                <p className="dark:text-gray-300">
                   ليس لديك حساب؟{" "}
                   <Button 
                     variant="link" 
@@ -143,7 +149,7 @@ export default function AuthPage() {
                   </Button>
                 </p>
               ) : (
-                <p>
+                <p className="dark:text-gray-300">
                   لديك حساب بالفعل؟{" "}
                   <Button 
                     variant="link" 
@@ -158,7 +164,7 @@ export default function AuthPage() {
             </div>
             <div className="text-center">
               <Link href="/">
-                <Button variant="ghost" className="text-sm" disabled={isLoading}>
+                <Button variant="ghost" className="text-sm dark:text-gray-300" disabled={isLoading}>
                   العودة إلى الصفحة الرئيسية
                 </Button>
               </Link>
