@@ -12,7 +12,7 @@ export default function Home() {
 
   const createNewChat = async () => {
     if (creating) return;
-    
+
     try {
       setCreating(true);
       const response = await apiRequest("POST", "/api/chats", { title: "محادثة جديدة" });
@@ -30,14 +30,14 @@ export default function Home() {
       setCreating(true);
       const response = await apiRequest("POST", "/api/chats", { title: suggestion });
       const newChat = await response.json();
-      
+
       // Add the first message to the chat
       await apiRequest("POST", "/api/messages", {
         chatId: newChat.id,
         content: suggestion,
         role: "user"
       });
-      
+
       setLocation(`/chat/${newChat.id}`);
     } catch (error) {
       console.error("Error handling suggestion:", error);
@@ -56,11 +56,11 @@ export default function Home() {
               <h1 className="text-3xl font-bold text-primary">Open Life</h1>
             </div>
           </div>
-          
+
           <p className="text-gray-600 text-center mb-8">
             مرحباً بك في Open Life. يمكنك سؤالي عن أي شيء بدون قيود. أنا هنا للإجابة على أسئلتك ومساعدتك.
           </p>
-          
+
           <div className="flex justify-center mb-8">
             <Button 
               size="lg" 
@@ -71,13 +71,13 @@ export default function Home() {
               {creating ? "جاري الإنشاء..." : "بدء محادثة جديدة"}
             </Button>
           </div>
-          
+
           <h2 className="text-lg font-medium text-center mb-4">أو جرب إحدى هذه الاقتراحات</h2>
-          
+
           <ChatSuggestions onSuggestionClick={handleSuggestionClick} />
-          
+
           <div className="text-xs text-gray-500 text-center mt-8">
-            Open Life يعتمد على DeepSeek AI ويقدم إجابات بدون قيود
+            موقع Open Life هو من تصميم و تنفيذ شركة ma3k
           </div>
         </CardContent>
       </Card>
